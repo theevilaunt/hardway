@@ -3,7 +3,7 @@ from random import randint
 
 class Scene(object):
   def enter(self):
-    print("unimplemented. subclass and implement enter()")
+    print("unimplemented. subclass will implement enter()")
     exit(1)
 
 class Engine(object):
@@ -13,11 +13,12 @@ class Engine(object):
 
   def play(self):
     current_loc = self.scene_map.opening_scene()
-    print("engine.play() starting at: '%s'" % current_loc)
-    while True:
+    #print("engine.play() starting at: '%s'" % current_loc)
+    while current_loc != 'finish':
       next_loc = self.scene_map.next_scene(current_loc).enter()
-      print("next_loc: '%s'" % next_loc)
+      # print("next_loc: '%s'" % next_loc)
       current_loc = next_loc
+    exit(1)
     # while True:
     #   print("\n------")
     #   print("play current_scene: '%s'" % current_scene)
@@ -43,7 +44,9 @@ class CentralCorridor(Scene):
     """
     print(msg)
 
-    action = input("shoot/dodge/joke > ")
+    prompt = "shoot/dodge/joke > "
+    action = input(prompt)
+    #print("debug: action '%s'" % action)
     if action == "shoot":
       print("sorry, gothon shoots and kills you")
       return 'death'
@@ -62,8 +65,8 @@ class Armory(Scene):
     print("you have 10 tries to enter correct 1 digit code")
     #code = "%d%d%d" % (randint(1,9),randint(1,9),randint(1,9))
     code = "%d" % randint(1,9)
-    print("code '%s'" % code)
-    guess = input("[keypad guess]: ")
+    # print("code '%s'" % code)
+    guess = input("[keypad guess (%s)]: " % code)
     print("guess '%s'" % guess)
     guesses = 0
     while int(guess) != int(code) and guesses < 10:
@@ -82,10 +85,9 @@ class Bridge(Scene):
   def enter(self):
     msg = """
     on bridge with bomb
-    throw/place
     """
     print(msg)
-    action = input("> ")
+    action = input("throw or place (bomb)> ")
     if action == "throw":
       print('gothons on bridge kill you')
       return 'death'
@@ -100,7 +102,7 @@ class EscapePod(Scene):
   def enter(self):
     print("select 1 of 5 pods")
     good_pod = randint(1,5)
-    guess = input("[pod#]> ")
+    guess = input("[pod# (%s)]> " % good_pod)
     if int(guess) != good_pod:
       print("pod %s is the wrong one; you are dead!" % guess)
       return 'death'
@@ -119,10 +121,10 @@ class Map(object):
   def __init__(self, start_scene):
     #self.start_screne = Scene()
     self.start_scene = start_scene
-    print('Here I am in the ' + self.start_scene)
+    #print('Here I am in the ' + self.start_scene)
 
   def next_scene(self, scene_name):
-    print("next_scene input: '%s'" % scene_name)
+    #print("next_scene input: '%s'" % scene_name)
     return Map.scenes.get(scene_name)
 
   def opening_scene(self):
